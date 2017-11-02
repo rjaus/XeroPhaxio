@@ -33,25 +33,25 @@ def handler(event, context):
 		if phone['PhoneType'] == "FAX":
 			# Check to see if the fax number is complete, if not, return an error
 			if not all((phone['PhoneCountryCode'], phone['PhoneAreaCode'], phone['PhoneNumber'])):
-				return { "statusCode": 400,  "headers": { "Content-Type": "application/json", "Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Credentials" : true }, "body": 'Contact does not have a Fax Number, add Fax Number to Contact in Xero and try again.'}
+				return { "statusCode": 400,  "headers": { "Content-Type": "application/json", "Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Credentials" : True }, "body": 'Contact does not have a Fax Number, add Fax Number to Contact in Xero and try again.'}
 			else:
 				fax_number = phone['PhoneCountryCode']+phone['PhoneAreaCode']+phone['PhoneNumber']
 
 	# Sanity check, did the contact have a fax number? If not, return with relevant error.
 	if fax_number == None:
-		return { "statusCode": 400,  "headers": { "Content-Type": "application/json", "Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Credentials" : true }, "body": 'Contact does not have a Fax Number, add Fax Number to Contact in Xero and try again.'}
+		return { "statusCode": 400,  "headers": { "Content-Type": "application/json", "Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Credentials" : True }, "body": 'Contact does not have a Fax Number, add Fax Number to Contact in Xero and try again.'}
 
 	# Now lets prepare to send a fax with Phaxio
 	# Frist, retrieve the PDF version of the invoice from the Xero API
 	invoice_pdf = xero.invoices.get(invoice_id, headers={'Accept': 'application/pdf'})
 
 	# Save the PDF retrieved to disk temporarily.  This is probably unnecessary, but I'm a Python Noob.
-	pdf_file = open('tmp/tmp_fax.pdf', 'wb')
+	pdf_file = open('/tmp/tmp_fax.pdf', 'wb')
 	pdf_file.write(invoice_pdf)
 	pdf_file.close()
 
 	# Send the PDF invoice as a fax with Phaxio
-	response = phaxio.Fax.send(fax_number, files='tmp/tmp_fax.pdf', header_text='Xero Invoice Faxed with Phaxio', tags_dict={'invoice_id': invoice_id})
+	response = phaxio.Fax.send(fax_number, files='/tmp/tmp_fax.pdf', header_text='Xero Invoice Faxed with Phaxio', tags_dict={'invoice_id': invoice_id})
 
 	# Upload a confirmation of the Fax Receipt
 	# As the Fax is not sent immediately, this needs to be done via a second Lambda function, invoked via the callback url.
@@ -63,7 +63,7 @@ def handler(event, context):
 		"headers": {
 			"Content-Type": "application/json",
 			"Access-Control-Allow-Origin" : "*",
-			"Access-Control-Allow-Credentials" : true
+			"Access-Control-Allow-Credentials" : True
 		},
 		"body": 'Fax Sent Successfully'
 	}
