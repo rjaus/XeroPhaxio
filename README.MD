@@ -1,7 +1,7 @@
 Xero & Phaxio API Integration Sample Project
 ----
 
-See the blog post for more indepth details: TBC
+See the blog post for more indepth details: https://medium.com/p/a954b62c0407
 
 Project is intended to be deployed to AWS Lambda with an API Gateway.  The API Gateway exposes an endpoint that can be called by the Chrome Extension.  The [Chrome Extension](https://github.com/rjaus/XeroPhaxioExtension) is available in a separate repo.
 
