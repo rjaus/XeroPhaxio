@@ -56,6 +56,10 @@ def handler(event, context):
 	# Upload a confirmation of the Fax Receipt
 	# As the Fax is not sent immediately, this needs to be done via a second Lambda function, invoked via the callback url.
 	# Skipping this feature for now.
+	# Mark the invoice as sent
+	invoice[0]['SentToContact'] = True
+	xero.invoices.save(invoice[0])
+
 
 	# Return with a status code 200, adding the relevant CORS headers to handle cross domain scripting.
 	return {
